@@ -10,6 +10,12 @@ dayjs.extend(customParseFormat)
 module.exports = {
   site: 'musor.tv',
   days: 2,
+  request: {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
+    }
+  },
   url({ channel, date }) {
     return dayjs.utc().isSame(date, 'd')
       ? `https://musor.tv/mai/tvmusor/${channel.site_id}`
@@ -37,7 +43,7 @@ module.exports = {
   },
   async channels() {
     const html = await axios
-      .get('https://musor.tv/')
+      .get('https://musor.tv/', this.request)
       .then(r => r.data)
       .catch(console.log)
 
