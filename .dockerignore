@@ -1,1 +1,17 @@
+/node_modules/
+/temp/
+/channels.xml
+/guide.xml
+/guide.xml.gz
+
+# macOS
+.DS_Store
+
+# Git
+/.git
 .gitignore
+
+# Docker
+/docker
+.dockerignore
+Dockerfile
