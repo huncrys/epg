@@ -2,7 +2,6 @@ variables:
   CI_DOCKERHUB_IMAGE: huncrys/epg
 
 include:
-  - component: $CI_SERVER_FQDN/oaklab/ci-templates/kaniko-build@~latest
+  - component: $CI_SERVER_FQDN/oaklab/ci-templates/oci-publish@7
     inputs:
       licenses: Unlicense
-  - component: $CI_SERVER_FQDN/oaklab/ci-templates/manifest-tool-manifest@~latest
