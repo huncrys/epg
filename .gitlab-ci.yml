@@ -2,6 +2,6 @@ variables:
   CI_DOCKERHUB_IMAGE: huncrys/epg
 
 include:
-  - component: $CI_SERVER_FQDN/oaklab/ci-templates/oci-publish@7
+  - component: $CI_SERVER_FQDN/oaklab/ci-templates/oci-publish@8
     inputs:
       licenses: Unlicense
