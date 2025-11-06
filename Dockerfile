@@ -1,22 +1,33 @@
-FROM node:22-alpine
-ARG GIT_REPO=https://github.com/iptv-org/epg.git
-ARG GIT_BRANCH=master
-ARG WORKDIR=/epg
-ENV CRON_SCHEDULE="0 0 * * *"
-ENV RUN_AT_STARTUP=true
-RUN apk update \
-    && apk upgrade --available \
-    && apk add curl git tzdata bash \
-    && npm install -g npm@latest \
-    && npm install pm2 -g \
-    && mkdir $(echo "${WORKDIR}") -p \
-    && cd $WORKDIR \
-    && git clone --depth 1 -b $(echo "${GIT_BRANCH} ${GIT_REPO}") . \
-    && npm install \
-    && mkdir /public
-RUN apk del git curl \
-  && rm -rf /var/cache/apk/*
-COPY pm2.config.js $WORKDIR
-WORKDIR $WORKDIR
-EXPOSE 3000
-CMD [ "pm2-runtime", "pm2.config.js" ]
+# syntax=docker/dockerfile:1
+
+FROM node:24-alpine@sha256:f36fed0b2129a8492535e2853c64fbdbd2d29dc1219ee3217023ca48aebd3787 AS base
+
+FROM base AS builder
+
+COPY . /app
+
+WORKDIR /app
+
+RUN npm ci
+
+FROM base
+
+COPY --from=builder /app /app
+
+WORKDIR /app
+
+ENV NPM_CONFIG_LOGLEVEL=silent
+
+RUN apk --no-cache --update add \
+        bash \
+        curl \
+        nginx \
+        nginx-mod-http-fancyindex \
+        tzdata
+
+COPY ./nginx.default.conf /etc/nginx/http.d/default.conf
+
+CMD ["nginx", "-g", "daemon off;"]
+
+EXPOSE 9980
+VOLUME /app/guides
